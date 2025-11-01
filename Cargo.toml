@@ -11,3 +11,9 @@ tokio = { version = "1.0", features = ["full"] }
 actix-cors = "0.7.1"
 bcrypt = "0.15" 
 validator = { version = "0.18", features = ["derive"] }
+
+[profile.release]
+opt-level = "z"  # Size optimization
+lto = true
+codegen-units = 1
+panic = "abort"

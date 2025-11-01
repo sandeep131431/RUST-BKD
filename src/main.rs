@@ -6,10 +6,19 @@ mod routes;
 use actix_web::{App, HttpServer};
 use actix_cors::Cors;
 use routes::config;
+use std::env;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    println!("Starting Actix-web server on http://localhost:8000");
+    // Render ke liye PORT environment variable use karein
+    let port = env::var("PORT")
+        .unwrap_or_else(|_| "8000".to_string())
+        .parse()
+        .expect("PORT must be a number");
+    
+    let host = "0.0.0.0"; // ✅ Important for cloud deployment
+    
+    println!("🚀 Starting Actix-web server on {}:{}", host, port);
     
     HttpServer::new(|| {
         let cors = Cors::permissive()
@@ -22,7 +31,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .configure(config)
     })
-    .bind("127.0.0.1:8000")?
+    .bind((host, port))?  // ✅ Bind to 0.0.0.0 with dynamic port
     .run()
     .await
 }
